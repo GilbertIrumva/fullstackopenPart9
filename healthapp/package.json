@@ -1,0 +1,13 @@
+{
+  "name": "healthapp",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc",
+    "calculateBmi": "tsx bmiCalculator.ts"
+  },
+  "devDependencies": {
+    "tsx": "...",
+    "typescript": "..."
+  }
+}
