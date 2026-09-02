@@ -1,26 +1,22 @@
-import axios from "axios";
-import { Patient, PatientFormValues } from "../types";
+import { Patient } from '../types';
 
-import { apiBaseUrl } from "../constants";
+const patients: Patient[] = [
+  {
+    id: "d2773336-f723-11e9-8f0b-362b9e155667",
+    name: "John McClane",
+    dateOfBirth: "1986-07-09",
+    ssn: "090786-122X",
+    gender: "male",
+    occupation: "New york city cop"
+  },
+  {
+    id: "d2773598-f723-11e9-8f0b-362b9e155667",
+    name: "Matti Luukkainen",
+    dateOfBirth: "1971-04-09",
+    ssn: "090471-8890",
+    gender: "male",
+    occupation: "Digital evangelist"
+  }
+];
 
-const getAll = async () => {
-  const { data } = await axios.get<Patient[]>(
-    `${apiBaseUrl}/patients`
-  );
-
-  return data;
-};
-
-const create = async (object: PatientFormValues) => {
-  const { data } = await axios.post<Patient>(
-    `${apiBaseUrl}/patients`,
-    object
-  );
-
-  return data;
-};
-
-export default {
-  getAll, create
-};
-
+export default patients;

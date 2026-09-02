@@ -1,4 +1,4 @@
-import diagnoses from "../../data/diagnoses.js";
+import diagnoses from "../data/diagnoses.js";
 import type { Diagnosis } from "../types.js";
 
 const getDiagnoses = (): Diagnosis[] => {
@@ -6,5 +6,5 @@ const getDiagnoses = (): Diagnosis[] => {
 };
 
 export default {
-  getDiagnoses,
+  getDiagnoses
 };
