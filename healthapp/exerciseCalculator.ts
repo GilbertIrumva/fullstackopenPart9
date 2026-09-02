@@ -1,5 +1,3 @@
-import { isNotNumber } from './utils.js';
-
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -49,39 +47,3 @@ export const calculateExercises = (
     average
   };
 };
-
-const parseArguments = (args: string[]): {
-  target: number;
-  dailyHours: number[];
-} => {
-  if (args.length < 4) {
-    throw new Error('Not enough arguments');
-  }
-
-  const values = args.slice(2);
-
-  if (values.some(value => isNotNumber(value))) {
-    throw new Error('Provided values were not numbers');
-  }
-
-  return {
-    target: Number(values[0]),
-    dailyHours: values.slice(1).map(Number)
-  };
-};
-
-try {
-  const { target, dailyHours } = parseArguments(process.argv);
-
-  console.log(
-    calculateExercises(dailyHours, target)
-  );
-} catch (error: unknown) {
-  let errorMessage = 'Something went wrong';
-
-  if (error instanceof Error) {
-    errorMessage += ': ' + error.message;
-  }
-
-  console.log(errorMessage);
-}
