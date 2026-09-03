@@ -15,6 +15,8 @@ export enum Gender {
 
 export type NonSensitivePatient = Omit<Patient, "ssn">;
 
+export type NewPatient = Omit<Patient, "id">;
+
 export interface Diagnosis {
   code: string;
   name: string;

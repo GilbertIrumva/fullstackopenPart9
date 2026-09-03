@@ -1,13 +1,17 @@
 import express from "express";
+import cors from "cors";
+
 import patientsRouter from "./src/routes/patients.js";
+
 const app = express();
 
+app.use(cors());
 app.use(express.json());
-app.use("/api/patients", patientsRouter);
 
+app.use("/api/patients", patientsRouter);
 
 const PORT = 3001;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+console.log(`Server running on port ${PORT}`);
 });
