@@ -8,7 +8,13 @@ import {
 } from "../types.js";
 
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
-  return patients.map(({ ssn, ...patient }) => patient);
+  return patients.map((patient) => {
+    const nonSensitivePatient = Object.fromEntries(
+      Object.entries(patient).filter(([key]) => key !== "ssn")
+    );
+
+    return nonSensitivePatient as NonSensitivePatient;
+  });
 };
 
 const addPatient = (entry: NewPatient): Patient => {
@@ -18,7 +24,6 @@ const addPatient = (entry: NewPatient): Patient => {
   };
 
   patients.push(newPatient);
-
   return newPatient;
 };
 
