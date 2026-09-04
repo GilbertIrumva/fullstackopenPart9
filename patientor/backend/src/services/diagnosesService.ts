@@ -1,10 +1,10 @@
 import diagnoses from "../data/diagnoses.js";
-import type { Diagnosis } from "../types.js";
+import { Diagnosis } from "../types.js";
 
-const getDiagnoses = (): Diagnosis[] => {
+const getEntries = (): Diagnosis[] => {
   return diagnoses;
 };
 
 export default {
-  getDiagnoses
+  getEntries
 };
