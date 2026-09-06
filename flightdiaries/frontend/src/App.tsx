@@ -1,11 +1,8 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import diaryService from './services/diaries';
-
 import type { DiaryEntry, NewDiaryEntry } from './types';
-
 import DiaryForm from './components/DiaryForm';
 
 function App() {
@@ -27,7 +24,10 @@ function App() {
       })
       .catch(error => {
         if (axios.isAxiosError(error)) {
-          setError(error.response?.data?.error?.[0]?.message || 'Failed to create diary entry');
+          setError(
+            error.response?.data?.error?.[0]?.message ||
+            'Failed to create diary entry'
+          );
         } else {
           setError('Failed to create diary entry');
         }
@@ -39,10 +39,10 @@ function App() {
       <h1>Flight Diaries</h1>
 
       {error && (
-  <div style={{ color: 'red' }}>
-    <strong>Error:</strong> {error}
-  </div>
-)}
+        <div style={{ color: 'red' }}>
+          <strong>Error:</strong> {error}
+        </div>
+      )}
 
       <DiaryForm onSubmit={addDiary} />
 
