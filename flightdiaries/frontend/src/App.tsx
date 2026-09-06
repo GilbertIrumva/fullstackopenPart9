@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import diaryService from './services/diaries';
 
@@ -8,6 +10,7 @@ import DiaryForm from './components/DiaryForm';
 
 function App() {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     diaryService.getAll().then(data => {
@@ -16,14 +19,30 @@ function App() {
   }, []);
 
   const addDiary = (entry: NewDiaryEntry) => {
-    diaryService.create(entry).then(data => {
-      setDiaries(current => current.concat(data));
-    });
+    setError(null);
+
+    diaryService.create(entry)
+      .then(data => {
+        setDiaries(current => current.concat(data));
+      })
+      .catch(error => {
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data?.error?.[0]?.message || 'Failed to create diary entry');
+        } else {
+          setError('Failed to create diary entry');
+        }
+      });
   };
 
   return (
     <div>
       <h1>Flight Diaries</h1>
+
+      {error && (
+  <div style={{ color: 'red' }}>
+    <strong>Error:</strong> {error}
+  </div>
+)}
 
       <DiaryForm onSubmit={addDiary} />
 
