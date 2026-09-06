@@ -1,6 +1,17 @@
-export interface diaryEntry {
+export type Weather = 'sunny' | 'rainy' | 'cloudy' | 'stormy' | 'windy';
+
+export type Visibility = 'great' | 'good' | 'ok' | 'poor';
+
+export interface DiaryEntry {
   id: number;
   date: string;
-  weather: string;
-  visibility: string;
+  weather: Weather;
+  visibility: Visibility;
 }
+
+export type NewDiaryEntry = {
+  date: string;
+  weather: Weather;
+  visibility: Visibility;
+  comment: string;
+};
