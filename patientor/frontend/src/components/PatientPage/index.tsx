@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+
 import {
   Box,
   Button,
@@ -7,11 +7,14 @@ import {
   Typography
 } from "@mui/material";
 
+import { Link, useParams } from "react-router-dom";
+
 import patientService from "../../services/patients";
 import { Patient } from "../../types";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string>();
 
@@ -62,41 +65,54 @@ const PatientPage = () => {
         {patient.name}
       </Typography>
 
-      <Typography variant="body1">
+      <Typography>
         <strong>Gender:</strong> {patient.gender}
       </Typography>
 
-      <Typography variant="body1">
+      <Typography>
         <strong>Date of birth:</strong> {patient.dateOfBirth}
       </Typography>
 
-      <Typography variant="body1">
+      <Typography>
         <strong>Occupation:</strong> {patient.occupation}
       </Typography>
 
-      <Typography variant="body1">
+      <Typography>
         <strong>SSN:</strong> {patient.ssn}
       </Typography>
 
       <Divider sx={{ marginY: 2 }} />
 
-      <Typography variant="h5" sx={{ marginBottom: 1 }}>
+      <Typography variant="h5" sx={{ marginBottom: 2 }}>
         Entries
       </Typography>
 
-      {patient.entries.length === 0 ? (
-        <Typography>
-          No entries yet.
-        </Typography>
-      ) : (
-        patient.entries.map((_entry, index) => (
-          <Box key={index} sx={{ marginBottom: 2 }}>
-            <Typography>
-              Journal entry
-            </Typography>
-          </Box>
-        ))
-      )}
+      {patient.entries.map((entry) => (
+        <Box
+          key={entry.id}
+          sx={{
+            marginBottom: 3,
+            padding: 2,
+            border: "1px solid #ccc",
+            borderRadius: 1
+          }}
+        >
+          <Typography>
+            <strong>Date:</strong> {entry.date}
+          </Typography>
+
+          <Typography>
+            <strong>Description:</strong> {entry.description}
+          </Typography>
+
+          <Typography>
+            <strong>Diagnosis codes:</strong>{" "}
+            {entry.diagnosisCodes
+              ? entry.diagnosisCodes.join(", ")
+              : "None"}
+          </Typography>
+        </Box>
+      ))}
 
       <Button
         component={Link}
