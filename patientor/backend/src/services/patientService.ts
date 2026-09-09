@@ -8,7 +8,13 @@ import {
 } from "../types.js";
 
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
-  return patients.map(({ ssn, entries, ...patient }) => patient);
+  return patients.map((patient) => ({
+    id: patient.id,
+    name: patient.name,
+    dateOfBirth: patient.dateOfBirth,
+    gender: patient.gender,
+    occupation: patient.occupation
+  }));
 };
 
 const getPatientById = (id: string): Patient | undefined => {

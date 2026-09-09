@@ -20,7 +20,9 @@ router.get("/:id", (req, res) => {
   const patient = patientService.getPatientById(req.params.id);
 
   if (!patient) {
-    res.status(404).send({ error: "Patient not found" });
+    res.status(404).send({
+      error: "Patient not found"
+    });
     return;
   }
 
