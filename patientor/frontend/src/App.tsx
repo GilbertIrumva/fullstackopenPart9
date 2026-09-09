@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   BrowserRouter as Router,
@@ -15,16 +15,19 @@ import {
 } from "@mui/material";
 
 import {
+  Diagnosis,
   NonSensitivePatient
 } from "./types";
 
 import patientService from "./services/patients";
+import diagnosisService from "./services/diagnoses";
 
 import PatientListPage from "./components/PatientListPage";
 import PatientPage from "./components/PatientPage";
 
 const App = () => {
   const [patients, setPatients] = useState<NonSensitivePatient[]>([]);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
     const fetchPatientList = async () => {
@@ -33,6 +36,15 @@ const App = () => {
     };
 
     void fetchPatientList();
+  }, []);
+
+  useEffect(() => {
+    const fetchDiagnoses = async () => {
+      const diagnoses = await diagnosisService.getAll();
+      setDiagnoses(diagnoses);
+    };
+
+    void fetchDiagnoses();
   }, []);
 
   return (
@@ -70,7 +82,11 @@ const App = () => {
 
             <Route
               path="/patients/:id"
-              element={<PatientPage />}
+              element={
+                <PatientPage
+                  diagnoses={diagnoses}
+                />
+              }
             />
           </Routes>
         </Container>

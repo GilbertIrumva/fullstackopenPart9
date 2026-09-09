@@ -10,9 +10,13 @@ import {
 import { Link, useParams } from "react-router-dom";
 
 import patientService from "../../services/patients";
-import { Patient } from "../../types";
+import { Diagnosis, Patient } from "../../types";
 
-const PatientPage = () => {
+interface Props {
+  diagnoses: Diagnosis[];
+}
+
+const PatientPage = ({ diagnoses }: Props) => {
   const { id } = useParams<{ id: string }>();
 
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -106,11 +110,24 @@ const PatientPage = () => {
           </Typography>
 
           <Typography>
-            <strong>Diagnosis codes:</strong>{" "}
-            {entry.diagnosisCodes
-              ? entry.diagnosisCodes.join(", ")
-              : "None"}
+            <strong>Diagnosis codes:</strong>
           </Typography>
+
+          {entry.diagnosisCodes &&
+            entry.diagnosisCodes.map((code) => {
+              const diagnosis = diagnoses.find(
+                (diagnosis) => diagnosis.code === code
+              );
+
+              return (
+                <Typography key={code} sx={{ marginLeft: 2 }}>
+                  {code}
+                  {diagnosis
+                    ? ` — ${diagnosis.name}`
+                    : ""}
+                </Typography>
+              );
+            })}
         </Box>
       ))}
 
