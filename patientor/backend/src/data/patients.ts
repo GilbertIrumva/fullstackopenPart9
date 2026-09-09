@@ -7,7 +7,8 @@ const patients: Patient[] = [
     dateOfBirth: "1990-01-01",
     ssn: "123456-7",
     gender: Gender.Male,
-    occupation: "Developer"
+    occupation: "Developer",
+    entries: []
   }
 ];
 

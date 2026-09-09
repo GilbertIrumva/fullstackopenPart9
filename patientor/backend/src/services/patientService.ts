@@ -8,13 +8,11 @@ import {
 } from "../types.js";
 
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
-  return patients.map((patient) => {
-    const nonSensitivePatient = Object.fromEntries(
-      Object.entries(patient).filter(([key]) => key !== "ssn")
-    );
+  return patients.map(({ ssn, entries, ...patient }) => patient);
+};
 
-    return nonSensitivePatient as NonSensitivePatient;
-  });
+const getPatientById = (id: string): Patient | undefined => {
+  return patients.find(patient => patient.id === id);
 };
 
 const addPatient = (entry: NewPatient): Patient => {
@@ -24,10 +22,12 @@ const addPatient = (entry: NewPatient): Patient => {
   };
 
   patients.push(newPatient);
+
   return newPatient;
 };
 
 export default {
   getNonSensitivePatients,
+  getPatientById,
   addPatient
 };
