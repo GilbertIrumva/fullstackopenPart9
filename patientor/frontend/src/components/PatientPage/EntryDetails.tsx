@@ -5,11 +5,13 @@ import {
 
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import WorkIcon from "@mui/icons-material/Work";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import {
   Entry,
   HospitalEntry,
-  OccupationalHealthcareEntry
+  OccupationalHealthcareEntry,
+  HealthCheckEntry
 } from "../../types";
 
 interface Props {
@@ -91,6 +93,31 @@ const OccupationalHealthcareEntryDetails = ({
   );
 };
 
+const HealthCheckEntryDetails = ({
+  entry
+}: {
+  entry: HealthCheckEntry;
+}) => {
+  return (
+    <Box>
+      <Typography>
+        <FavoriteIcon
+          sx={{
+            verticalAlign: "middle",
+            marginRight: 1
+          }}
+        />
+        Health Check
+      </Typography>
+
+      <Typography>
+        <strong>Health check rating:</strong>{" "}
+        {entry.healthCheckRating}
+      </Typography>
+    </Box>
+  );
+};
+
 const EntryDetails = ({ entry }: Props) => {
   switch (entry.type) {
     case "Hospital":
@@ -101,6 +128,13 @@ const EntryDetails = ({ entry }: Props) => {
     case "OccupationalHealthcare":
       return (
         <OccupationalHealthcareEntryDetails
+          entry={entry}
+        />
+      );
+
+    case "HealthCheck":
+      return (
+        <HealthCheckEntryDetails
           entry={entry}
         />
       );

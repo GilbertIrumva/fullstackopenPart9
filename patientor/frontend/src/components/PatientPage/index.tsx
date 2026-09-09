@@ -9,10 +9,17 @@ import {
 
 import { Link, useParams } from "react-router-dom";
 
+import axios from "axios";
+
 import patientService from "../../services/patients";
-import { Diagnosis, Patient } from "../../types";
+import {
+  Diagnosis,
+  Patient,
+  NewEntry
+} from "../../types";
 
 import EntryDetails from "./EntryDetails";
+import AddEntryForm from "../AddEntryForm";
 
 interface Props {
   diagnoses: Diagnosis[];
@@ -21,8 +28,17 @@ interface Props {
 const PatientPage = ({ diagnoses }: Props) => {
   const { id } = useParams<{ id: string }>();
 
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [error, setError] = useState<string>();
+  const [patient, setPatient] =
+    useState<Patient | null>(null);
+
+  const [error, setError] =
+    useState<string>();
+
+  const [entryFormOpen, setEntryFormOpen] =
+    useState<boolean>(false);
+
+  const [entryError, setEntryError] =
+    useState<string>();
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -32,16 +48,72 @@ const PatientPage = ({ diagnoses }: Props) => {
       }
 
       try {
-        const fetchedPatient = await patientService.getOne(id);
+        const fetchedPatient =
+          await patientService.getOne(id);
+
         setPatient(fetchedPatient);
       } catch (e: unknown) {
-        console.error("Error fetching patient:", e);
+        console.error(
+          "Error fetching patient:",
+          e
+        );
+
         setError("Failed to fetch patient");
       }
     };
 
     void fetchPatient();
   }, [id]);
+
+  const submitNewEntry = async (
+    entry: NewEntry
+  ) => {
+    if (!id || !patient) {
+      return;
+    }
+
+    try {
+      setEntryError(undefined);
+
+      const addedEntry =
+        await patientService.createEntry(
+          id,
+          entry
+        );
+
+      setPatient({
+        ...patient,
+        entries: patient.entries.concat(
+          addedEntry
+        )
+      });
+
+      setEntryFormOpen(false);
+    } catch (e: unknown) {
+      console.error(
+        "Error adding entry:",
+        e
+      );
+
+      if (axios.isAxiosError(e)) {
+        if (
+          typeof e.response?.data === "string"
+        ) {
+          setEntryError(
+            e.response.data
+          );
+        } else {
+          setEntryError(
+            "Failed to add entry"
+          );
+        }
+      } else {
+        setEntryError(
+          "Failed to add entry"
+        );
+      }
+    }
+  };
 
   if (error) {
     return (
@@ -50,7 +122,10 @@ const PatientPage = ({ diagnoses }: Props) => {
           {error}
         </Typography>
 
-        <Button component={Link} to="/">
+        <Button
+          component={Link}
+          to="/"
+        >
           Back to patient list
         </Button>
       </Box>
@@ -75,7 +150,8 @@ const PatientPage = ({ diagnoses }: Props) => {
       </Typography>
 
       <Typography>
-        <strong>Gender:</strong> {patient.gender}
+        <strong>Gender:</strong>{" "}
+        {patient.gender}
       </Typography>
 
       <Typography>
@@ -89,10 +165,33 @@ const PatientPage = ({ diagnoses }: Props) => {
       </Typography>
 
       <Typography>
-        <strong>SSN:</strong> {patient.ssn}
+        <strong>SSN:</strong>{" "}
+        {patient.ssn}
       </Typography>
 
       <Divider sx={{ marginY: 2 }} />
+
+      {entryFormOpen ? (
+        <AddEntryForm
+          onSubmit={submitNewEntry}
+          onCancel={() => {
+            setEntryFormOpen(false);
+            setEntryError(undefined);
+          }}
+          error={entryError}
+        />
+      ) : (
+        <Button
+          variant="contained"
+          onClick={() => {
+            setEntryError(undefined);
+            setEntryFormOpen(true);
+          }}
+          sx={{ marginBottom: 3 }}
+        >
+          Add Entry
+        </Button>
+      )}
 
       <Typography
         variant="h5"
@@ -112,7 +211,8 @@ const PatientPage = ({ diagnoses }: Props) => {
           }}
         >
           <Typography>
-            <strong>Date:</strong> {entry.date}
+            <strong>Date:</strong>{" "}
+            {entry.date}
           </Typography>
 
           <Typography>
@@ -121,31 +221,43 @@ const PatientPage = ({ diagnoses }: Props) => {
           </Typography>
 
           <Typography>
+            <strong>Specialist:</strong>{" "}
+            {entry.specialist}
+          </Typography>
+
+          <Typography>
             <strong>Diagnosis codes:</strong>
           </Typography>
 
           {entry.diagnosisCodes &&
-            entry.diagnosisCodes.map((code) => {
-              const diagnosis = diagnoses.find(
-                (diagnosis) =>
-                  diagnosis.code === code
-              );
+            entry.diagnosisCodes.map(
+              (code) => {
+                const diagnosis =
+                  diagnoses.find(
+                    (diagnosis) =>
+                      diagnosis.code === code
+                  );
 
-              return (
-                <Typography
-                  key={code}
-                  sx={{ marginLeft: 2 }}
-                >
-                  {code}
-                  {diagnosis
-                    ? ` — ${diagnosis.name}`
-                    : ""}
-                </Typography>
-              );
-            })}
+                return (
+                  <Typography
+                    key={code}
+                    sx={{
+                      marginLeft: 2
+                    }}
+                  >
+                    {code}
+                    {diagnosis
+                      ? ` — ${diagnosis.name}`
+                      : ""}
+                  </Typography>
+                );
+              }
+            )}
 
           <Box sx={{ marginTop: 2 }}>
-            <EntryDetails entry={entry} />
+            <EntryDetails
+              entry={entry}
+            />
           </Box>
         </Box>
       ))}
