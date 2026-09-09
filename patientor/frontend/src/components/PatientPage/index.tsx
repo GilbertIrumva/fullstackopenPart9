@@ -12,6 +12,8 @@ import { Link, useParams } from "react-router-dom";
 import patientService from "../../services/patients";
 import { Diagnosis, Patient } from "../../types";
 
+import EntryDetails from "./EntryDetails";
+
 interface Props {
   diagnoses: Diagnosis[];
 }
@@ -65,7 +67,10 @@ const PatientPage = ({ diagnoses }: Props) => {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ marginBottom: 2 }}>
+      <Typography
+        variant="h4"
+        sx={{ marginBottom: 2 }}
+      >
         {patient.name}
       </Typography>
 
@@ -74,11 +79,13 @@ const PatientPage = ({ diagnoses }: Props) => {
       </Typography>
 
       <Typography>
-        <strong>Date of birth:</strong> {patient.dateOfBirth}
+        <strong>Date of birth:</strong>{" "}
+        {patient.dateOfBirth}
       </Typography>
 
       <Typography>
-        <strong>Occupation:</strong> {patient.occupation}
+        <strong>Occupation:</strong>{" "}
+        {patient.occupation}
       </Typography>
 
       <Typography>
@@ -87,7 +94,10 @@ const PatientPage = ({ diagnoses }: Props) => {
 
       <Divider sx={{ marginY: 2 }} />
 
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>
+      <Typography
+        variant="h5"
+        sx={{ marginBottom: 2 }}
+      >
         Entries
       </Typography>
 
@@ -106,7 +116,8 @@ const PatientPage = ({ diagnoses }: Props) => {
           </Typography>
 
           <Typography>
-            <strong>Description:</strong> {entry.description}
+            <strong>Description:</strong>{" "}
+            {entry.description}
           </Typography>
 
           <Typography>
@@ -116,11 +127,15 @@ const PatientPage = ({ diagnoses }: Props) => {
           {entry.diagnosisCodes &&
             entry.diagnosisCodes.map((code) => {
               const diagnosis = diagnoses.find(
-                (diagnosis) => diagnosis.code === code
+                (diagnosis) =>
+                  diagnosis.code === code
               );
 
               return (
-                <Typography key={code} sx={{ marginLeft: 2 }}>
+                <Typography
+                  key={code}
+                  sx={{ marginLeft: 2 }}
+                >
                   {code}
                   {diagnosis
                     ? ` — ${diagnosis.name}`
@@ -128,6 +143,10 @@ const PatientPage = ({ diagnoses }: Props) => {
                 </Typography>
               );
             })}
+
+          <Box sx={{ marginTop: 2 }}>
+            <EntryDetails entry={entry} />
+          </Box>
         </Box>
       ))}
 
