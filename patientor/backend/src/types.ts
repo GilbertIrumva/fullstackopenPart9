@@ -4,13 +4,26 @@ export const Gender = {
   Other: "other"
 } as const;
 
-export type Gender = typeof Gender[keyof typeof Gender];
+export type Gender =
+  typeof Gender[keyof typeof Gender];
 
 export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
 }
+
+export const HealthCheckRating = {
+  Healthy: 0,
+  LowRisk: 1,
+  HighRisk: 2,
+  CriticalRisk: 3
+} as const;
+
+export type HealthCheckRating =
+  typeof HealthCheckRating[
+    keyof typeof HealthCheckRating
+  ];
 
 export interface BaseEntry {
   id: string;
@@ -20,7 +33,8 @@ export interface BaseEntry {
   diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
-export interface OccupationalHealthcareEntry extends BaseEntry {
+export interface OccupationalHealthcareEntry
+  extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
   sickLeave?: {
@@ -29,7 +43,8 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
   };
 }
 
-export interface HospitalEntry extends BaseEntry {
+export interface HospitalEntry
+  extends BaseEntry {
   type: "Hospital";
   discharge: {
     date: string;
@@ -37,9 +52,21 @@ export interface HospitalEntry extends BaseEntry {
   };
 }
 
+export interface HealthCheckEntry
+  extends BaseEntry {
+  type: "HealthCheck";
+  healthCheckRating: HealthCheckRating;
+}
+
 export type Entry =
   | HospitalEntry
-  | OccupationalHealthcareEntry;
+  | OccupationalHealthcareEntry
+  | HealthCheckEntry;
+
+export type NewEntry =
+  | Omit<HospitalEntry, "id">
+  | Omit<OccupationalHealthcareEntry, "id">
+  | Omit<HealthCheckEntry, "id">;
 
 export interface Patient {
   id: string;
@@ -51,6 +78,8 @@ export interface Patient {
   entries: Entry[];
 }
 
-export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;
+export type NonSensitivePatient =
+  Omit<Patient, "ssn" | "entries">;
 
-export type NewPatient = Omit<Patient, "id">;
+export type NewPatient =
+  Omit<Patient, "id">;
