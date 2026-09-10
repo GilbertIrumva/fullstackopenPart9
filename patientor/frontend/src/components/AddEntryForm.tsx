@@ -6,23 +6,28 @@ import {
 import {
   Box,
   Button,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  ListItemText,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField,
-  Typography,
-  InputLabel,
-  FormControl
+  Typography
 } from "@mui/material";
 
 import {
   NewEntry,
-  HealthCheckRating
+  HealthCheckRating,
+  Diagnosis
 } from "../types";
 
 interface Props {
   onSubmit: (entry: NewEntry) => void;
   onCancel: () => void;
   error?: string;
+  diagnoses: Diagnosis[];
 }
 
 type EntryType =
@@ -33,7 +38,8 @@ type EntryType =
 const AddEntryForm = ({
   onSubmit,
   onCancel,
-  error
+  error,
+  diagnoses
 }: Props) => {
   const [type, setType] =
     useState<EntryType>("HealthCheck");
@@ -47,11 +53,11 @@ const AddEntryForm = ({
   const [specialist, setSpecialist] =
     useState("");
 
-  const [diagnosisCodes, setDiagnosisCodes] =
-    useState("");
+  const [selectedDiagnosisCodes, setSelectedDiagnosisCodes] =
+    useState<string[]>([]);
 
   const [healthCheckRating, setHealthCheckRating] =
-    useState("");
+    useState<HealthCheckRating | "">("");
 
   const [dischargeDate, setDischargeDate] =
     useState("");
@@ -68,6 +74,18 @@ const AddEntryForm = ({
   const [sickLeaveEndDate, setSickLeaveEndDate] =
     useState("");
 
+  const handleDiagnosisChange = (
+    event: SelectChangeEvent<string[]>
+  ) => {
+    const value = event.target.value;
+
+    setSelectedDiagnosisCodes(
+      typeof value === "string"
+        ? value.split(",")
+        : value
+    );
+  };
+
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
 
@@ -75,28 +93,23 @@ const AddEntryForm = ({
       description,
       date,
       specialist,
-      type,
-      ...(diagnosisCodes.trim() !== ""
+      ...(selectedDiagnosisCodes.length > 0
         ? {
-            diagnosisCodes: diagnosisCodes
-              .split(",")
-              .map((code) => code.trim())
-              .filter(
-                (code) => code.length > 0
-              )
+            diagnosisCodes:
+              selectedDiagnosisCodes
           }
         : {})
     };
 
     if (type === "HealthCheck") {
-      const rating =
-        Number(healthCheckRating);
+      if (healthCheckRating === "") {
+        return;
+      }
 
       onSubmit({
         ...baseEntry,
         type: "HealthCheck",
-        healthCheckRating:
-          rating as HealthCheckRating
+        healthCheckRating
       });
 
       return;
@@ -119,8 +132,8 @@ const AddEntryForm = ({
       ...baseEntry,
       type: "OccupationalHealthcare",
       employerName,
-      ...(sickLeaveStartDate.trim() !== "" &&
-      sickLeaveEndDate.trim() !== ""
+      ...(sickLeaveStartDate !== "" &&
+      sickLeaveEndDate !== ""
         ? {
             sickLeave: {
               startDate: sickLeaveStartDate,
@@ -202,13 +215,18 @@ const AddEntryForm = ({
 
         <TextField
           label="Date"
-          placeholder="YYYY-MM-DD"
+          type="date"
           fullWidth
           required
           value={date}
           onChange={({ target }) =>
             setDate(target.value)
           }
+          slotProps={{
+            inputLabel: {
+              shrink: true
+            }
+          }}
           sx={{ marginBottom: 2 }}
         />
 
@@ -224,26 +242,49 @@ const AddEntryForm = ({
         />
 
         {type === "HealthCheck" && (
-          <TextField
-            label="Health Check Rating"
-            placeholder="0, 1, 2 or 3"
+          <FormControl
             fullWidth
             required
-            value={healthCheckRating}
-            onChange={({ target }) =>
-              setHealthCheckRating(
-                target.value
-              )
-            }
             sx={{ marginBottom: 2 }}
-          />
+          >
+            <InputLabel id="health-rating-label">
+              Health Check Rating
+            </InputLabel>
+
+            <Select
+              labelId="health-rating-label"
+              value={healthCheckRating}
+              label="Health Check Rating"
+              onChange={(event) =>
+                setHealthCheckRating(
+                  event.target.value as HealthCheckRating
+                )
+              }
+            >
+              <MenuItem value={HealthCheckRating.Healthy}>
+                Healthy (0)
+              </MenuItem>
+
+              <MenuItem value={HealthCheckRating.LowRisk}>
+                Low Risk (1)
+              </MenuItem>
+
+              <MenuItem value={HealthCheckRating.HighRisk}>
+                High Risk (2)
+              </MenuItem>
+
+              <MenuItem value={HealthCheckRating.CriticalRisk}>
+                Critical Risk (3)
+              </MenuItem>
+            </Select>
+          </FormControl>
         )}
 
         {type === "Hospital" && (
           <>
             <TextField
               label="Discharge date"
-              placeholder="YYYY-MM-DD"
+              type="date"
               fullWidth
               required
               value={dischargeDate}
@@ -252,6 +293,11 @@ const AddEntryForm = ({
                   target.value
                 )
               }
+              slotProps={{
+                inputLabel: {
+                  shrink: true
+                }
+              }}
               sx={{ marginBottom: 2 }}
             />
 
@@ -287,7 +333,7 @@ const AddEntryForm = ({
 
             <TextField
               label="Sick leave start date"
-              placeholder="YYYY-MM-DD"
+              type="date"
               fullWidth
               value={sickLeaveStartDate}
               onChange={({ target }) =>
@@ -295,12 +341,17 @@ const AddEntryForm = ({
                   target.value
                 )
               }
+              slotProps={{
+                inputLabel: {
+                  shrink: true
+                }
+              }}
               sx={{ marginBottom: 2 }}
             />
 
             <TextField
               label="Sick leave end date"
-              placeholder="YYYY-MM-DD"
+              type="date"
               fullWidth
               value={sickLeaveEndDate}
               onChange={({ target }) =>
@@ -308,21 +359,53 @@ const AddEntryForm = ({
                   target.value
                 )
               }
+              slotProps={{
+                inputLabel: {
+                  shrink: true
+                }
+              }}
               sx={{ marginBottom: 2 }}
             />
           </>
         )}
 
-        <TextField
-          label="Diagnosis codes"
-          placeholder="S62.5, M51.2"
+        <FormControl
           fullWidth
-          value={diagnosisCodes}
-          onChange={({ target }) =>
-            setDiagnosisCodes(target.value)
-          }
           sx={{ marginBottom: 2 }}
-        />
+        >
+          <InputLabel id="diagnosis-codes-label">
+            Diagnosis codes
+          </InputLabel>
+
+          <Select
+            labelId="diagnosis-codes-label"
+            multiple
+            value={selectedDiagnosisCodes}
+            onChange={handleDiagnosisChange}
+            label="Diagnosis codes"
+            renderValue={(selected) =>
+              selected.join(", ")
+            }
+          >
+            {diagnoses.map((diagnosis) => (
+              <MenuItem
+                key={diagnosis.code}
+                value={diagnosis.code}
+              >
+                <Checkbox
+                  checked={selectedDiagnosisCodes.includes(
+                    diagnosis.code
+                  )}
+                />
+
+                <ListItemText
+                  primary={diagnosis.code}
+                  secondary={diagnosis.name}
+                />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Button
           type="submit"

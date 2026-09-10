@@ -7,11 +7,15 @@ import {
   Typography
 } from "@mui/material";
 
-import { Link, useParams } from "react-router-dom";
+import {
+  Link,
+  useParams
+} from "react-router-dom";
 
 import axios from "axios";
 
 import patientService from "../../services/patients";
+
 import {
   Diagnosis,
   Patient,
@@ -25,8 +29,11 @@ interface Props {
   diagnoses: Diagnosis[];
 }
 
-const PatientPage = ({ diagnoses }: Props) => {
-  const { id } = useParams<{ id: string }>();
+const PatientPage = ({
+  diagnoses
+}: Props) => {
+  const { id } =
+    useParams<{ id: string }>();
 
   const [patient, setPatient] =
     useState<Patient | null>(null);
@@ -58,7 +65,9 @@ const PatientPage = ({ diagnoses }: Props) => {
           e
         );
 
-        setError("Failed to fetch patient");
+        setError(
+          "Failed to fetch patient"
+        );
       }
     };
 
@@ -97,7 +106,8 @@ const PatientPage = ({ diagnoses }: Props) => {
 
       if (axios.isAxiosError(e)) {
         if (
-          typeof e.response?.data === "string"
+          typeof e.response?.data ===
+          "string"
         ) {
           setEntryError(
             e.response.data
@@ -155,7 +165,9 @@ const PatientPage = ({ diagnoses }: Props) => {
       </Typography>
 
       <Typography>
-        <strong>Date of birth:</strong>{" "}
+        <strong>
+          Date of birth:
+        </strong>{" "}
         {patient.dateOfBirth}
       </Typography>
 
@@ -173,6 +185,7 @@ const PatientPage = ({ diagnoses }: Props) => {
 
       {entryFormOpen ? (
         <AddEntryForm
+          diagnoses={diagnoses}
           onSubmit={submitNewEntry}
           onCancel={() => {
             setEntryFormOpen(false);
@@ -216,17 +229,23 @@ const PatientPage = ({ diagnoses }: Props) => {
           </Typography>
 
           <Typography>
-            <strong>Description:</strong>{" "}
+            <strong>
+              Description:
+            </strong>{" "}
             {entry.description}
           </Typography>
 
           <Typography>
-            <strong>Specialist:</strong>{" "}
+            <strong>
+              Specialist:
+            </strong>{" "}
             {entry.specialist}
           </Typography>
 
           <Typography>
-            <strong>Diagnosis codes:</strong>
+            <strong>
+              Diagnosis codes:
+            </strong>
           </Typography>
 
           {entry.diagnosisCodes &&
@@ -235,7 +254,8 @@ const PatientPage = ({ diagnoses }: Props) => {
                 const diagnosis =
                   diagnoses.find(
                     (diagnosis) =>
-                      diagnosis.code === code
+                      diagnosis.code ===
+                      code
                   );
 
                 return (
@@ -254,7 +274,9 @@ const PatientPage = ({ diagnoses }: Props) => {
               }
             )}
 
-          <Box sx={{ marginTop: 2 }}>
+          <Box
+            sx={{ marginTop: 2 }}
+          >
             <EntryDetails
               entry={entry}
             />
