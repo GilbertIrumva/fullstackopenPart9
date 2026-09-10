@@ -53,11 +53,17 @@ const AddEntryForm = ({
   const [specialist, setSpecialist] =
     useState("");
 
-  const [selectedDiagnosisCodes, setSelectedDiagnosisCodes] =
-    useState<string[]>([]);
+  const [
+    selectedDiagnosisCodes,
+    setSelectedDiagnosisCodes
+  ] = useState<string[]>([]);
 
-  const [healthCheckRating, setHealthCheckRating] =
-    useState<HealthCheckRating | "">("");
+  const [
+    healthCheckRating,
+    setHealthCheckRating
+  ] = useState<HealthCheckRating>(
+    HealthCheckRating.Healthy
+  );
 
   const [dischargeDate, setDischargeDate] =
     useState("");
@@ -68,11 +74,15 @@ const AddEntryForm = ({
   const [employerName, setEmployerName] =
     useState("");
 
-  const [sickLeaveStartDate, setSickLeaveStartDate] =
-    useState("");
+  const [
+    sickLeaveStartDate,
+    setSickLeaveStartDate
+  ] = useState("");
 
-  const [sickLeaveEndDate, setSickLeaveEndDate] =
-    useState("");
+  const [
+    sickLeaveEndDate,
+    setSickLeaveEndDate
+  ] = useState("");
 
   const handleDiagnosisChange = (
     event: SelectChangeEvent<string[]>
@@ -86,7 +96,9 @@ const AddEntryForm = ({
     );
   };
 
-  const addEntry = (event: SyntheticEvent) => {
+  const addEntry = (
+    event: SyntheticEvent
+  ) => {
     event.preventDefault();
 
     const baseEntry = {
@@ -102,10 +114,6 @@ const AddEntryForm = ({
     };
 
     if (type === "HealthCheck") {
-      if (healthCheckRating === "") {
-        return;
-      }
-
       onSubmit({
         ...baseEntry,
         type: "HealthCheck",
@@ -261,19 +269,27 @@ const AddEntryForm = ({
                 )
               }
             >
-              <MenuItem value={HealthCheckRating.Healthy}>
+              <MenuItem
+                value={HealthCheckRating.Healthy}
+              >
                 Healthy (0)
               </MenuItem>
 
-              <MenuItem value={HealthCheckRating.LowRisk}>
+              <MenuItem
+                value={HealthCheckRating.LowRisk}
+              >
                 Low Risk (1)
               </MenuItem>
 
-              <MenuItem value={HealthCheckRating.HighRisk}>
+              <MenuItem
+                value={HealthCheckRating.HighRisk}
+              >
                 High Risk (2)
               </MenuItem>
 
-              <MenuItem value={HealthCheckRating.CriticalRisk}>
+              <MenuItem
+                value={HealthCheckRating.CriticalRisk}
+              >
                 Critical Risk (3)
               </MenuItem>
             </Select>
@@ -289,9 +305,7 @@ const AddEntryForm = ({
               required
               value={dischargeDate}
               onChange={({ target }) =>
-                setDischargeDate(
-                  target.value
-                )
+                setDischargeDate(target.value)
               }
               slotProps={{
                 inputLabel: {
@@ -307,9 +321,7 @@ const AddEntryForm = ({
               required
               value={dischargeCriteria}
               onChange={({ target }) =>
-                setDischargeCriteria(
-                  target.value
-                )
+                setDischargeCriteria(target.value)
               }
               sx={{ marginBottom: 2 }}
             />
@@ -324,9 +336,7 @@ const AddEntryForm = ({
               required
               value={employerName}
               onChange={({ target }) =>
-                setEmployerName(
-                  target.value
-                )
+                setEmployerName(target.value)
               }
               sx={{ marginBottom: 2 }}
             />
@@ -337,9 +347,7 @@ const AddEntryForm = ({
               fullWidth
               value={sickLeaveStartDate}
               onChange={({ target }) =>
-                setSickLeaveStartDate(
-                  target.value
-                )
+                setSickLeaveStartDate(target.value)
               }
               slotProps={{
                 inputLabel: {
@@ -355,9 +363,7 @@ const AddEntryForm = ({
               fullWidth
               value={sickLeaveEndDate}
               onChange={({ target }) =>
-                setSickLeaveEndDate(
-                  target.value
-                )
+                setSickLeaveEndDate(target.value)
               }
               slotProps={{
                 inputLabel: {

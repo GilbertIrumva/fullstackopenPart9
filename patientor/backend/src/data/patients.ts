@@ -2,12 +2,12 @@ import { Patient, Gender } from "../types.js";
 
 const patients: Patient[] = [
   {
-    id: "1",
-    name: "John Doe",
-    dateOfBirth: "1990-01-01",
-    ssn: "123456-7",
+    id: "d2773336-f723-11e9-8f0b-362b9e155667",
+    name: "John McClane",
+    dateOfBirth: "1986-07-09",
+    ssn: "090786-122X",
     gender: Gender.Male,
-    occupation: "Developer",
+    occupation: "New york city cop",
     entries: [
       {
         id: "d811e46d-70b3-4d90-b090-4535c7cf8fb1",
@@ -37,6 +37,15 @@ const patients: Patient[] = [
         }
       }
     ]
+  },
+  {
+    id: "d2773598-f723-11e9-8f0b-362b9e155667",
+    name: "Martin Riggs",
+    dateOfBirth: "1979-01-30",
+    ssn: "300179-77A",
+    gender: Gender.Male,
+    occupation: "Cop",
+    entries: []
   }
 ];
 
